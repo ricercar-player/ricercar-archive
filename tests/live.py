@@ -68,6 +68,10 @@ root = p.call("browse.root")
 check([s["ref"] for s in root["sections"]] == ["popular", "recent", "today", "artists", "favorites"],
       "root: " + ", ".join(s["title"] for s in root["sections"]))
 
+check([s["ref"] for s in root.get("home", [])] == ["popular", "recent", "today"]
+      and all(s["browsable"] for s in root["home"]),
+      "home: " + ", ".join(s["title"] for s in root.get("home", [])))
+
 for sec in ("popular", "recent", "today"):
     r = p.call("browse.list", {"ref": sec, "offset": 0, "limit": 20})
     check(len(r["items"]) > 0 and r["items"][0]["kind"] == "album" and r["has_more"],
@@ -119,6 +123,15 @@ for r in ("i/" + FLAC48, "c/GratefulDead", t0["ref"]):
 lib = {m: p.call(m, {"offset": 0, "limit": 200})["items"] for m in ("library.albums", "library.artists", "library.tracks")}
 check([len(v) for v in lib.values()] == [1, 1, 1] and lib["library.tracks"][0]["title"] == "Touch Of Grey",
       "library from favourites")
+al, ar1 = lib["library.albums"][0], lib["library.artists"][0]
+check(al["kind"] == "album" and al["browsable"] and al.get("artist") and al.get("year") and al.get("art"),
+      "library album: artist %r, year %s" % (al.get("artist"), al.get("year")))
+check(ar1["kind"] == "artist" and ar1["browsable"] and ar1.get("art"), "library artist: " + ar1["title"])
+check(p.call("browse.list", {"ref": al["ref"], "offset": 0, "limit": 5})["items"][0]["kind"] == "track",
+      "library album -> tracks")
+check(p.call("browse.list", {"ref": ar1["ref"], "offset": 0, "limit": 5})["items"][0]["kind"] == "album",
+      "library artist -> recordings")
+check(p.call("library.playlists", {"offset": 0, "limit": 200})["code"] == -32601, "no library.playlists")
 check(len(p.call("browse.list", {"ref": "favorites", "offset": 0, "limit": 50})["items"]) == 3, "favourites section")
 p.call("favorites.set", {"ref": "c/GratefulDead", "on": False})
 check(len(json.load(open(DATA + "/favorites.json"))["items"]) == 2, "unfavourite, saved")

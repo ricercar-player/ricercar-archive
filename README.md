@@ -8,6 +8,7 @@ live shows to be shared, most of them lossless.
 - **Browse:** popular this week, recently added, *on this day* (shows
   played on today's date, any year), and every artist's recordings, newest
   first.
+  In ricercar's Home page, the first three show as shelves.
 - **Search:** artists and recordings.
 - **Favourites:** star recordings, artists and tracks. The Archive needs no
   account, so the plugin keeps them itself; they make up its library in
@@ -74,6 +75,9 @@ cargo build --release
 Plugin protocol 1, as described in ricercar's
 [docs/plugins.md](https://github.com/ricercar-player/ricercar/blob/main/docs/plugins.md),
 with the `favorites` and `library` capabilities and without `auth`.
+`browse.root` gives the `sections` (for hosts without the library) and the
+`home` shelves (`popular`, `recent`, `today`). There is no
+`library.playlists`: the Archive has no user playlists.
 
 | Ref | Meaning |
 |---|---|

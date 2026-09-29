@@ -193,13 +193,17 @@ impl Plugin {
             ("artists", t("Artists", "Artistes").to_string()),
             ("favorites", t("Favourites", "Favoris").to_string()),
         ];
-        let sections: Vec<Value> = sections
+        let entry = |(r, title): &(&str, String)| json!({"ref": r, "kind": "folder", "title": title, "browsable": true});
+        // Home shelves, for hosts that show the library instead of the
+        // sections: the lists of recordings, not the directory of artists
+        // nor the favourites (already in the library).
+        let home: Vec<Value> = sections
             .iter()
-            .map(
-                |(r, title)| json!({"ref": r, "kind": "folder", "title": title, "browsable": true}),
-            )
+            .filter(|(r, _)| matches!(*r, "popular" | "recent" | "today"))
+            .map(entry)
             .collect();
-        Ok(json!({ "sections": sections }))
+        let sections: Vec<Value> = sections.iter().map(entry).collect();
+        Ok(json!({ "sections": sections, "home": home }))
     }
 
     /// One page of recordings matching `q`.
@@ -404,6 +408,7 @@ impl Plugin {
             "item.get" => self.item(p["ref"].as_str().unwrap_or("")),
             "favorites.set" => self.favorite(p),
             "library.albums" | "library.artists" | "library.tracks" => self.library(method, p),
+            // No `library.playlists`: the Archive has no user playlists.
             "track.resolve" => self.resolve(p),
             _ => Err(rpc_err(-32601, format!("method not found: {method}"))),
         }
@@ -494,6 +499,46 @@ mod tests {
         assert!(q.ends_with(&format!("{}-09-29)", this_year())));
         let (m, d) = month_day();
         assert!((1..=12).contains(&m) && (1..=31).contains(&d));
+    }
+
+    #[test]
+    fn root_and_home() {
+        let plugin = Plugin {
+            fr: Mutex::new(false),
+            output: Mutex::new(Output::default()),
+            client: Client::new(),
+            favorites: Mutex::new(Favorites::default()),
+            records: Mutex::new(HashMap::new()),
+        };
+        let root = plugin.root().ok().unwrap();
+        let refs = |k: &str| -> Vec<String> {
+            root[k]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|i| i["ref"].as_str().unwrap().to_string())
+                .collect()
+        };
+        assert_eq!(
+            refs("sections"),
+            ["popular", "recent", "today", "artists", "favorites"]
+        );
+        assert_eq!(refs("home"), ["popular", "recent", "today"]);
+        assert!(
+            root["home"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .all(|i| i["browsable"] == true)
+        );
+        assert_eq!(
+            plugin
+                .handle("library.playlists", &Value::Null)
+                .err()
+                .unwrap()
+                .code,
+            -32601
+        );
     }
 
     #[test]
