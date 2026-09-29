@@ -1,0 +1,22 @@
+# Entry for the ricercar plugin hub (github.com/ricercar-player/ricercar-plugins),
+# to publish as plugins/archive.toml. On a release, update `version`, the
+# URLs and the SHA-256 from the release's .sha256 files.
+id = "archive"
+name = "Live Music Archive"
+description = "Hundreds of thousands of concert recordings from the Internet Archive's Live Music Archive, free to share, most of them lossless. Browse popular, recent and on-this-day shows or an artist's recordings, search, and keep favourites in your library. No account. Original FLAC files, bit for bit."
+author = "ricercar-player"
+license = "MIT"
+repository = "https://github.com/ricercar-player/ricercar-archive"
+version = "0.1.0"
+protocol = 1
+capabilities = ["browse", "search", "resolve", "favorites", "library"]
+
+[[assets]]
+arch = "x86_64"
+url = "https://github.com/ricercar-player/ricercar-archive/releases/download/v0.1.0/archive-x86_64"
+sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
+
+[[assets]]
+arch = "aarch64"
+url = "https://github.com/ricercar-player/ricercar-archive/releases/download/v0.1.0/archive-aarch64"
+sha256 = "0000000000000000000000000000000000000000000000000000000000000000"

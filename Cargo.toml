@@ -1,0 +1,17 @@
+[package]
+name = "ricercar-archive"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "Live Music Archive (Internet Archive) source plugin for the ricercar music player"
+license = "MIT"
+repository = "https://github.com/ricercar-player/ricercar-archive"
+
+[dependencies]
+serde_json = "1"
+ureq = "2.12"
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1
