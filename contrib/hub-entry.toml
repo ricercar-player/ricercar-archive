@@ -7,16 +7,16 @@ description = "Hundreds of thousands of concert recordings from the Internet Arc
 author = "ricercar-player"
 license = "MIT"
 repository = "https://github.com/ricercar-player/ricercar-archive"
-version = "0.1.0"
+version = "0.2.0"
 protocol = 1
 capabilities = ["browse", "search", "resolve", "favorites", "library"]
 
 [[assets]]
 arch = "x86_64"
-url = "https://github.com/ricercar-player/ricercar-archive/releases/download/v0.1.0/archive-x86_64"
-sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
+url = "https://github.com/ricercar-player/ricercar-archive/releases/download/v0.2.0/archive-x86_64"
+sha256 = "a83bf0a07a6592a764915bad337c59e6b58401a703547f612069c0eeb763797e"
 
 [[assets]]
 arch = "aarch64"
-url = "https://github.com/ricercar-player/ricercar-archive/releases/download/v0.1.0/archive-aarch64"
-sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
+url = "https://github.com/ricercar-player/ricercar-archive/releases/download/v0.2.0/archive-aarch64"
+sha256 = "8fbcb00ae04d0ad3a92100cf35b5a0493388f703245e83dbdea958555dfaa14f"
